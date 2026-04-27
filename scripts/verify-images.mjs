@@ -21,7 +21,13 @@ function main() {
   }
 
   const content = readFileSync(promptsPath, 'utf8');
-  const entries = parsePromptsFile(content);
+  let entries;
+  try {
+    entries = parsePromptsFile(content);
+  } catch (err) {
+    console.error(`Failed to parse ${promptsPath}: ${err.message}`);
+    process.exit(2);
+  }
 
   // Project root = parent of the directory containing prompts.md.
   // Spec: prompts.md lives at <projectRoot>/.gpt-manual-gen/prompts.md
