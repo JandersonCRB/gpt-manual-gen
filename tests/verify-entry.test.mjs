@@ -142,3 +142,22 @@ test('fails on unparseable native size', () => {
   assert.equal(result.ok, false);
   assert.match(result.reason, /native size/i);
 });
+
+test('fails on native size with trailing garbage', () => {
+  const entry = { ...PNG_ENTRY, nativeSize: '1024×1024 px' };
+  const result = verifyEntry(entry, '/proj', {
+    fs: makeFs(),
+    getDimensions: makeDims(1024, 1024),
+  });
+  assert.equal(result.ok, false);
+  assert.match(result.reason, /native size/i);
+});
+
+test('accepts native size with surrounding whitespace', () => {
+  const entry = { ...PNG_ENTRY, nativeSize: '  1024×1024  ' };
+  const result = verifyEntry(entry, '/proj', {
+    fs: makeFs(),
+    getDimensions: makeDims(1024, 1024),
+  });
+  assert.deepEqual(result, { ok: true });
+});

@@ -57,7 +57,7 @@ export function verifyEntry(entry, projectRoot, deps) {
 }
 
 function parseSize(value) {
-  const m = value.match(/(\d+)\s*[×x]\s*(\d+)/);
+  const m = value.match(/^\s*(\d+)\s*[×x]\s*(\d+)\s*$/);
   if (!m) return null;
   return { width: Number(m[1]), height: Number(m[2]) };
 }
