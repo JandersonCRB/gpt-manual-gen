@@ -19,7 +19,7 @@ Drives a human-in-the-loop workflow: Claude plans descriptive image prompts, the
 - The task is to integrate already-generated images (just `<img>` placement, no generation).
 - The user wants images generated via API instead of manually (this skill is explicitly manual).
 
-If activated and no images are actually needed for the current task, bail early with: "No image generation needed for this task." Do not write any files.
+If activated and no images are actually needed — for example, the task is styling, layout adjustment, or integrating already-existing images — bail early with: "No image generation needed for this task." Do not write any files.
 
 ## Phase 1: Survey
 
@@ -54,7 +54,11 @@ If `.gpt-manual-gen/prompts.md` already exists at the project root, do NOT overw
 
 > "A previous gpt-manual-gen run is in progress at `.gpt-manual-gen/prompts.md`. Resume from it (verify the existing entries) or start fresh (delete and replan)?"
 
-Wait for the answer. If resume: skip ahead to Phase 4. If start fresh: delete `.gpt-manual-gen/` and continue below.
+Wait for the answer. Map the user's reply:
+
+- **Resume** signals: "resume", "continue", "keep it", "where we left off", "verify what's there". Skip ahead to Phase 4.
+- **Start fresh** signals: "fresh", "restart", "redo", "delete", "replan", "start over". Delete `.gpt-manual-gen/` and continue below.
+- **Unclear**: ask again with explicit options: "Reply 'resume' to verify the existing images, or 'fresh' to delete and replan."
 
 ### Update `.gitignore`
 
@@ -107,13 +111,19 @@ Run on the user's continuation signal.
 
 ### Step 4a: Programmatic check
 
-Run the verification script:
+Run the verification script. Locate it by trying these paths in order:
+
+1. `scripts/verify-images.mjs` (relative — works when running from inside the plugin's own repo or a project that has cloned the plugin)
+2. `${CLAUDE_PLUGIN_ROOT}/scripts/verify-images.mjs` — works when the plugin is installed via `/plugin install` if Claude Code exposes that env var to the shell
+3. `~/.claude/plugins/gpt-manual-gen/scripts/verify-images.mjs` — common install location fallback
+
+Run it as:
 
 ```
-node <plugin path>/scripts/verify-images.mjs .gpt-manual-gen/prompts.md
+node <resolved-path> .gpt-manual-gen/prompts.md
 ```
 
-The plugin path resolution is environment-dependent. If running from inside the plugin's repo, use `scripts/verify-images.mjs`. If installed as a Claude Code plugin, the path is `${CLAUDE_PLUGIN_ROOT}/scripts/verify-images.mjs`.
+If none of the paths resolve, ask the user where the plugin is installed before continuing.
 
 The script:
 1. Parses `prompts.md`.
@@ -125,7 +135,7 @@ Read the updated `prompts.md` after the script runs. Note which entries are now 
 
 ### Step 4b: Visual check
 
-For every entry now marked `verified` (and only those — entries the script marked `failed` skip this step), open the image with `Read` and judge:
+For every entry that the script JUST promoted from `pending` or `failed:` to `verified` in this Phase 4 cycle (and only those — entries the script marked `failed` skip this step; entries that were already `verified` before this cycle started are not re-opened), open the image with `Read` and judge:
 
 - **Subject match:** does the image depict what the prompt asked for?
 - **Style match:** if a reference was attached, does the style align with the reference (stroke, palette, treatment)?
