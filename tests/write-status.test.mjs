@@ -62,3 +62,11 @@ test('overwrites a previous failed status', () => {
   assert.match(result, /## 1\.[\s\S]*\*\*Status:\*\* verified/);
   assert.doesNotMatch(result, /failed: file not found/);
 });
+
+test('handles CRLF input without producing mixed line endings', () => {
+  const crlfSample = SAMPLE.replace(/\n/g, '\r\n');
+  const result = writeStatusUpdates(crlfSample, new Map([[1, 'verified']]));
+  // No bare CR characters should remain — all line endings should be LF after normalization
+  assert.equal(result.includes('\r'), false, 'output must not contain any \\r characters');
+  assert.match(result, /\*\*Status:\*\* verified/);
+});
