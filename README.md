@@ -25,9 +25,14 @@ When you're building a UI and need images (icons, illustrations, hero shots, ava
 
 ## Install
 
+In Claude Code, register this repo as a marketplace and install the plugin:
+
 ```
-/plugin install JandersonCRB/gpt-manual-gen
+/plugin marketplace add JandersonCRB/gpt-manual-gen
+/plugin install gpt-manual-gen@gpt-manual-gen
 ```
+
+If `/plugin` is not available in your environment, update Claude Code first (`npm update -g @anthropic-ai/claude-code`, then restart your terminal).
 
 ## Design
 

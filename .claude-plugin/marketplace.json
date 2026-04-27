@@ -1,0 +1,13 @@
+{
+  "name": "gpt-manual-gen",
+  "owner": {
+    "name": "JandersonCRB"
+  },
+  "plugins": [
+    {
+      "name": "gpt-manual-gen",
+      "source": "./",
+      "description": "Manual image generation workflow via GPT Image 2 — Claude drafts prompts, user runs in ChatGPT, Claude verifies"
+    }
+  ]
+}
