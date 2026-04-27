@@ -1,0 +1,16 @@
+{
+  "name": "gpt-manual-gen",
+  "version": "0.1.0",
+  "description": "Claude Code plugin for manual image generation via GPT Image 2",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "test": "node --test tests/"
+  },
+  "dependencies": {
+    "image-size": "^1.2.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
