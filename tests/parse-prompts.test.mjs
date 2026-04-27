@@ -79,3 +79,10 @@ test('throws on invalid heading format', () => {
   const bad = '## not-a-numbered-heading\n- **Format:** PNG\n';
   assert.throws(() => parsePromptsFile(bad), /heading/i);
 });
+
+test('parses CRLF-terminated content the same as LF-terminated', () => {
+  const crlf = SAMPLE.replace(/\n/g, '\r\n');
+  const lfEntries = parsePromptsFile(SAMPLE);
+  const crlfEntries = parsePromptsFile(crlf);
+  assert.deepEqual(crlfEntries, lfEntries);
+});

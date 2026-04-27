@@ -11,7 +11,7 @@ const FIELD_KEY_MAP = {
 };
 
 export function parsePromptsFile(content) {
-  const lines = content.split('\n');
+  const lines = content.replace(/\r\n/g, '\n').split('\n');
   const entries = [];
   let current = null;
 
